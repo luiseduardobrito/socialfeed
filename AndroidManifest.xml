@@ -8,6 +8,12 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -15,12 +21,23 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="io.github.luiseduardobrito.social.activity.MainActivity_"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="io.github.luiseduardobrito.social.activity.CreatorActivity_"
+            android:label="@string/title_activity_creator"
+            android:parentActivityName="io.github.luiseduardobrito.social.activity.MainActivity_"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.github.luiseduardobrito.social.activity.MainActivity_" />
         </activity>
     </application>
 

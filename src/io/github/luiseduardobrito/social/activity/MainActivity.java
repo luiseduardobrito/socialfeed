@@ -87,6 +87,7 @@ public class MainActivity extends Activity implements
 	}
 
 	@OptionsItem
-	void actionSettings() {
+	void actionAdd() {
+		CreatorActivity_.intent(this).startForResult(0);
 	}
 }

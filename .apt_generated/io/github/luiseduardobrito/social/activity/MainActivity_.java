@@ -84,8 +84,8 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_settings) {
-            actionSettings();
+        if (itemId_ == id.action_add) {
+            actionAdd();
             return true;
         }
         return false;

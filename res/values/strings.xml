@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">14 de Julho</string>
+    <string name="app_name">Social Feed</string>
     <string name="title_section1">Inbox</string>
     <string name="title_section2">Sent</string>
     <string name="title_section3">Settings</string>
@@ -9,11 +9,23 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-    
+
     <string-array name="feed">
         <item>Teste 1</item>
         <item>Teste 2</item>
         <item>Teste 3</item>
     </string-array>
+    
+    <string-array name="message_types_labels">
+        <item>Photo</item>
+        <item>Video</item>
+    </string-array>
+    
+    <string-array name="message_types">
+        <item>photo</item>
+        <item>video</item>
+    </string-array>
+
+    <string name="title_activity_creator">Create</string>
 
 </resources>

@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="io.github.luiseduardobrito.social.CreatorActivity" >
+
+    <item
+        android:id="@+id/action_capture"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_camera"
+        android:showAsAction="always"/>
+    
+    <item
+        android:id="@+id/action_gallery"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_gallery"
+        android:showAsAction="always"/>
+    
+    <item
+        android:id="@+id/action_video"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_video"
+        android:showAsAction="ifRoom"/>
+
+</menu>
