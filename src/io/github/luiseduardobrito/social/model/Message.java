@@ -6,6 +6,9 @@ package io.github.luiseduardobrito.social.model;
 import java.util.List;
 import java.util.Observable;
 
+import com.parse.ParseException;
+import com.parse.ParseObject;
+
 /**
  * @author Luis Eduardo Brito
  * 
@@ -18,8 +21,23 @@ public class Message extends Observable {
 
 	private MessageType type;
 	private MessageState state;
-	
+
 	private List<Message> answers;
+
+	public static ParseObject saveParseObject(Message message) throws ParseException {
+		ParseObject mMessageObject = new ParseObject("Message");
+		mMessageObject.put("title", message.getTitle());
+		mMessageObject.put("type", message.getType());
+		mMessageObject.put("state", message.getState());
+		mMessageObject.save();
+		return mMessageObject;
+	}
+
+	public static Message createAndSave(String title, MessageType type) throws ParseException {
+		Message message = new Message(title, type);
+		saveParseObject(message);
+		return message;
+	}
 
 	public Message(String title, MessageType type) {
 		this.title = title;
@@ -98,7 +116,7 @@ public class Message extends Observable {
 		this.points = points;
 		changeAndNotify();
 	}
-	
+
 	public List<Message> getAnswers() {
 		return answers;
 	}

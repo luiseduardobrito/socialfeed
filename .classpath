@@ -14,6 +14,7 @@
 	<classpathentry kind="lib" path="libs/sentry-0.1.4.jar"/>
 	<classpathentry kind="lib" path="libs/spring-android-core-1.0.1.RELEASE.jar"/>
 	<classpathentry kind="lib" path="libs/spring-android-rest-template-1.0.1.RELEASE.jar"/>
+	<classpathentry kind="lib" path="libs/Parse-1.5.0.jar"/>
 	<classpathentry kind="src" path=".apt_generated">
 		<attributes>
 			<attribute name="optional" value="true"/>

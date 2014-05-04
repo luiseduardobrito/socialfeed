@@ -74,8 +74,8 @@ public final class CreatorActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mImageView = ((ImageView) hasViews.findViewById(id.imageView));
         mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
+        mImageView = ((ImageView) hasViews.findViewById(id.imageView));
     }
 
     @Override
@@ -92,16 +92,16 @@ public final class CreatorActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_capture) {
-            actionCapture();
+        if (itemId_ == id.action_gallery) {
+            actionGallery();
             return true;
         }
         if (itemId_ == id.action_video) {
             actionVideo();
             return true;
         }
-        if (itemId_ == id.action_gallery) {
-            actionGallery();
+        if (itemId_ == id.action_capture) {
+            actionCapture();
             return true;
         }
         return false;
