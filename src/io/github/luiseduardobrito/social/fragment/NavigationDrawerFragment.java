@@ -1,5 +1,6 @@
-package io.github.luiseduardobrito.social;
+package io.github.luiseduardobrito.social.fragment;
 
+import io.github.luiseduardobrito.social.R;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;

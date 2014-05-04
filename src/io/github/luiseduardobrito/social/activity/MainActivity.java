@@ -1,9 +1,9 @@
 package io.github.luiseduardobrito.social.activity;
 
-import io.github.luiseduardobrito.social.NavigationDrawerFragment;
 import io.github.luiseduardobrito.social.R;
 import io.github.luiseduardobrito.social.exception.AppParseException;
 import io.github.luiseduardobrito.social.fragment.AppFragment;
+import io.github.luiseduardobrito.social.fragment.NavigationDrawerFragment;
 import io.github.luiseduardobrito.social.intent.AppIntentActions;
 import io.github.luiseduardobrito.social.model.MessageListManager;
 import io.github.luiseduardobrito.social.push.AppPushManager;

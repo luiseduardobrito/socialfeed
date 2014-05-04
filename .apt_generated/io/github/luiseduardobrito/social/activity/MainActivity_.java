@@ -92,12 +92,12 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_add) {
-            actionAdd();
-            return true;
-        }
         if (itemId_ == id.action_login) {
             actionLogin();
+            return true;
+        }
+        if (itemId_ == id.action_add) {
+            actionAdd();
             return true;
         }
         return false;

@@ -8,8 +8,7 @@ import io.github.luiseduardobrito.social.exception.AppParseException;
 import java.util.List;
 import java.util.Observable;
 
-import android.net.ParseException;
-
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 /**
@@ -28,8 +27,10 @@ public class User extends Observable {
 	 * @param mUserObject
 	 * @return
 	 * @throws ParseException
+	 * @throws ParseException
 	 */
 	protected static User fromParseObject(ParseUser mUserObject) throws ParseException {
+		mUserObject = mUserObject.fetchIfNeeded();
 		String objectId = mUserObject.getObjectId();
 		String name = mUserObject.getString("name");
 		String email = mUserObject.getString("email");
@@ -90,6 +91,15 @@ public class User extends Observable {
 		}
 	}
 
+	public static User getCurrent() throws AppParseException {
+		try {
+			return fromParseObject(ParseUser.getCurrentUser());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			throw AppParseException.fromParse(e);
+		}
+	}
+
 	/**
 	 * @param objectId
 	 * @param name
@@ -145,5 +155,14 @@ public class User extends Observable {
 	public void setName(String name) {
 		this.name = name;
 		changeAndNotify();
+	}
+
+	public ParseUser getParseObject() throws AppParseException {
+		try {
+			return ParseUser.getQuery().get(this.getObjectId());
+		} catch (com.parse.ParseException e) {
+			e.printStackTrace();
+			throw AppParseException.fromParse(e);
+		}
 	}
 }

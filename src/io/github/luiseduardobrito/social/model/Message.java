@@ -20,20 +20,20 @@ import com.parse.ParseQuery;
 public class Message extends Observable {
 
 	private String title;
-	private String timestamp;
 	private Integer points;
 
 	private MessageType type;
 	private MessageState state;
 
-	private List<Message> answers;
+	private User creator;
 
 	protected static Message fromParseObject(ParseObject mMessageObject) throws ParseException {
 
 		String title = mMessageObject.getString("title");
+		User creator = User.fromParseObject(mMessageObject.getParseUser("creator"));
 		MessageType type = MessageType.fromString(mMessageObject.getString("type"));
 
-		Message message = new Message(title, type);
+		Message message = new Message(title, type, creator);
 		message.setState(MessageState.fromString(mMessageObject.getString("state")));
 		message.setPoints(mMessageObject.getNumber("points").intValue());
 
@@ -46,6 +46,7 @@ public class Message extends Observable {
 		mMessageObject.put("type", message.getType().toString());
 		mMessageObject.put("state", message.getState().toString());
 		mMessageObject.put("points", message.getPoints());
+		mMessageObject.put("creator", message.getCreator().getParseObject());
 		return mMessageObject;
 	}
 
@@ -90,46 +91,40 @@ public class Message extends Observable {
 		return mMessageList;
 	}
 
-	public static Message createAndSave(String title, MessageType type, Integer points)
+	public static Message createAndSave(String title, MessageType type, User creator, Integer points)
 			throws AppParseException {
-		Message message = new Message(title, type);
+		Message message = new Message(title, type, creator);
 		message.setPoints(points);
 		saveParseObject(message);
 		return message;
 	}
 
-	public static Message createAndSave(String title, MessageType type) throws AppParseException {
-		return createAndSave(title, type, 0);
+	public static Message createAndSave(String title, MessageType type, User creator)
+			throws AppParseException {
+		return createAndSave(title, type, creator, 0);
 	}
 
-	public Message(String title, MessageType type) {
+	public Message(String title, MessageType type, User creator) {
 		this.title = title;
 		this.type = type;
+		this.creator = creator;
 		this.state = MessageState.SENT;
 		this.points = 0;
 	}
 
-	public Message(String title, MessageType type, MessageState state) {
+	public Message(String title, MessageType type, User creator, MessageState state) {
 		this.title = title;
 		this.type = type;
+		this.creator = creator;
 		this.state = state;
 		this.points = 0;
 	}
 
-	public Message(String title, MessageType type, MessageState state, String timestamp) {
+	public Message(String title, MessageType type, User creator, MessageState state, Integer points) {
 		this.title = title;
 		this.type = type;
+		this.creator = creator;
 		this.state = state;
-		this.timestamp = timestamp;
-		this.points = 0;
-	}
-
-	public Message(String title, MessageType type, MessageState state, String timestamp,
-			Integer points) {
-		this.title = title;
-		this.type = type;
-		this.state = state;
-		this.timestamp = timestamp;
 		this.points = points;
 	}
 
@@ -165,15 +160,6 @@ public class Message extends Observable {
 		changeAndNotify();
 	}
 
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-		changeAndNotify();
-	}
-
 	public Integer getPoints() {
 		return points;
 	}
@@ -183,12 +169,7 @@ public class Message extends Observable {
 		changeAndNotify();
 	}
 
-	public List<Message> getAnswers() {
-		return answers;
-	}
-
-	public void setAnswers(List<Message> answers) {
-		this.answers = answers;
-		changeAndNotify();
+	public User getCreator() {
+		return this.creator;
 	}
 }

@@ -33,8 +33,8 @@ public class CardView extends FrameLayout {
 	@ViewById(R.id.points)
 	TextView points;
 
-	@ViewById(R.id.timestamp)
-	TextView timestamp;
+	@ViewById(R.id.creator)
+	TextView creator;
 
 	public CardView(Context context) {
 		super(context);
@@ -42,13 +42,13 @@ public class CardView extends FrameLayout {
 
 	public void bind(Message msg) {
 
-		if (msg.getTimestamp() == null) {
-			timestamp.setVisibility(View.GONE);
+		if (msg.getCreator() == null) {
+			creator.setVisibility(View.GONE);
 		}
 
 		else {
-			timestamp.setVisibility(View.VISIBLE);
-			timestamp.setText(msg.getTimestamp());
+			creator.setVisibility(View.VISIBLE);
+			creator.setText(msg.getCreator().getName());
 		}
 
 		if (msg.getPoints() == null) {
@@ -58,11 +58,11 @@ public class CardView extends FrameLayout {
 		else {
 
 			points.setVisibility(View.VISIBLE);
-			
+
 			MessageState state = msg.getState();
 			int resId = state.getResourceId();
 			Drawable iconDrawable = getContext().getResources().getDrawable(resId);
-			
+
 			points.setBackground(iconDrawable);
 			points.setText(msg.getPoints().toString());
 		}

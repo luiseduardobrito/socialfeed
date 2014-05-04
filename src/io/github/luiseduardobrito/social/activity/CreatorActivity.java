@@ -5,6 +5,7 @@ import io.github.luiseduardobrito.social.exception.AppParseException;
 import io.github.luiseduardobrito.social.model.Message;
 import io.github.luiseduardobrito.social.model.MessageListManager;
 import io.github.luiseduardobrito.social.model.MessageType;
+import io.github.luiseduardobrito.social.model.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,13 +49,13 @@ import android.widget.VideoView;
 public class CreatorActivity extends Activity {
 
 	static final String TAG = "CREATOR";
-	
+
 	public static final int REQUEST_CREATE = 100;
-	
+
 	public static final int RESULT_OK = Activity.RESULT_OK;
 	public static final int RESULT_CANCEL = Activity.RESULT_CANCELED;
 	public static final int RESULT_ERROR = 201;
-	
+
 	protected static final int INTENT_REQUEST_IMAGE_CAPTURE = 301;
 	protected static final int INTENT_REQUEST_VIDEO_CAPTURE = 302;
 	protected static final int INTENT_REQUEST_IMAGE_PICKER = 303;
@@ -62,7 +63,7 @@ public class CreatorActivity extends Activity {
 	File file;
 	String mCurrentPhotoPath;
 	ProgressDialog mProgressDialog;
-	
+
 	@Bean
 	MessageListManager mMessageList;
 
@@ -83,9 +84,9 @@ public class CreatorActivity extends Activity {
 
 	@Click
 	void submitMessage() {
-		
-		mProgressDialog = ProgressDialog.show(this, null, "Loading...");				
-		
+
+		mProgressDialog = ProgressDialog.show(this, null, "Loading...");
+
 		Integer points = Integer.valueOf(mPointsEdit.getText().toString());
 		String title = mTitleEdit.getText().toString();
 		MessageType type = MessageType.fromString(typeSpinner.getSelectedItem().toString());
@@ -98,7 +99,7 @@ public class CreatorActivity extends Activity {
 
 		try {
 
-			Message.createAndSave(title, type, points);
+			Message.createAndSave(title, type, User.getCurrent(), points);
 			mMessageList.refresh();
 			dimissDialog();
 			this.finish();
@@ -113,7 +114,7 @@ public class CreatorActivity extends Activity {
 		dimissDialog();
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@UiThread
 	void dimissDialog() {
 		mProgressDialog.dismiss();
@@ -145,7 +146,8 @@ public class CreatorActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
-		if (requestCode == INTENT_REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && null != intent) {
+		if (requestCode == INTENT_REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK
+				&& null != intent) {
 
 			Bundle extras = intent.getExtras();
 			Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -159,7 +161,8 @@ public class CreatorActivity extends Activity {
 			mImageView.setImageBitmap(imageBitmap);
 		}
 
-		else if (requestCode == INTENT_REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK && null != intent) {
+		else if (requestCode == INTENT_REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK
+				&& null != intent) {
 
 			Uri videoUri = intent.getData();
 
