@@ -42,8 +42,8 @@ public final class MainActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
-        push = AppPushManager_.getInstance_(this);
         mMessageList = MessageListManager_.getInstance_(this);
+        push = AppPushManager_.getInstance_(this);
         init();
         OnViewChangedNotifier.registerOnViewChangedListener(this);
     }
@@ -92,12 +92,12 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_login) {
-            actionLogin();
-            return true;
-        }
         if (itemId_ == id.action_add) {
             actionAdd();
+            return true;
+        }
+        if (itemId_ == id.action_login) {
+            actionLogin();
             return true;
         }
         return false;
