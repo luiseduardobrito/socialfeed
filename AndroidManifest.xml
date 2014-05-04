@@ -94,7 +94,7 @@
         <activity
             android:name="io.github.luiseduardobrito.social.activity.LoginActivity_"
             android:label="@string/title_activity_login"
-            android:parentActivityName="io.github.luiseduardobrito.social.activity.MainActivity"
+            android:parentActivityName="io.github.luiseduardobrito.social.activity.MainActivity_"
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

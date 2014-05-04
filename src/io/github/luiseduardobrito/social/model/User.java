@@ -3,8 +3,14 @@
  */
 package io.github.luiseduardobrito.social.model;
 
+import io.github.luiseduardobrito.social.exception.AppParseException;
+
 import java.util.List;
 import java.util.Observable;
+
+import android.net.ParseException;
+
+import com.parse.ParseUser;
 
 /**
  * @author Luis Eduardo Brito
@@ -12,56 +18,132 @@ import java.util.Observable;
  */
 public class User extends Observable {
 
-	private Integer id;
+	private String objectId;
 	private String name;
 	private String email;
-	private String password;
 
 	private List<Message> messages;
 
-	public User(String name, String email, String password) {
-		this.name = name;
-		this.email = email;
-		this.password = password;
+	/**
+	 * @param mUserObject
+	 * @return
+	 * @throws ParseException
+	 */
+	protected static User fromParseObject(ParseUser mUserObject) throws ParseException {
+		String objectId = mUserObject.getObjectId();
+		String name = mUserObject.getString("name");
+		String email = mUserObject.getString("email");
+		return new User(objectId, name, email);
 	}
 
+	/**
+	 * @param name
+	 * @param email
+	 * @param password
+	 * @return
+	 * @throws com.parse.ParseException
+	 */
+	public static ParseUser createParseObject(String name, String email, String password)
+			throws com.parse.ParseException {
+		ParseUser mParseUser = new ParseUser();
+		mParseUser.put("name", name);
+		mParseUser.setUsername(email);
+		mParseUser.setPassword(password);
+		mParseUser.setEmail(email);
+		mParseUser.signUp();
+		return mParseUser;
+	}
+
+	/**
+	 * @param name
+	 * @param email
+	 * @param password
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static User createAndSave(String name, String email, String password)
+			throws AppParseException {
+		ParseUser mParseUser;
+		try {
+			mParseUser = createParseObject(name, email, password);
+			return fromParseObject(mParseUser);
+		} catch (com.parse.ParseException e) {
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	/**
+	 * @param email
+	 * @param password
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static User findByCredentials(String email, String password) throws AppParseException {
+
+		try {
+
+			ParseUser mParseUser = ParseUser.logIn(email, password);
+			return User.fromParseObject(mParseUser);
+
+		} catch (com.parse.ParseException e) {
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	/**
+	 * @param objectId
+	 * @param name
+	 * @param email
+	 */
+	public User(String objectId, String name, String email) {
+		this.objectId = objectId;
+		this.name = name;
+		this.email = email;
+	}
+
+	/**
+	 * Set as changed and notify observers
+	 */
 	private void changeAndNotify() {
 		this.setChanged();
 		this.notifyObservers();
 	}
 
-	public Integer getId() {
-		return id;
+	/**
+	 * @return User objectId in Parse
+	 */
+	public String getObjectId() {
+		return objectId;
 	}
 
+	/**
+	 * @return User name in Parse
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-		changeAndNotify();
-	}
-
+	/**
+	 * @return User email in Parse
+	 */
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-		changeAndNotify();
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-		changeAndNotify();
-	}
-
+	/**
+	 * @return User message list
+	 */
 	public List<Message> getMessages() {
 		return messages;
+	}
+
+	/**
+	 * Set User name in Parse
+	 * 
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+		changeAndNotify();
 	}
 }

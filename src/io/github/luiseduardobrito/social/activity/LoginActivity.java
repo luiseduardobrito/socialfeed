@@ -1,13 +1,18 @@
 package io.github.luiseduardobrito.social.activity;
 
+import io.github.luiseduardobrito.social.AppPrefs_;
 import io.github.luiseduardobrito.social.R;
+import io.github.luiseduardobrito.social.exception.AppParseException;
+import io.github.luiseduardobrito.social.model.User;
 
-import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -23,6 +28,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -52,15 +58,23 @@ public class LoginActivity extends Activity {
 	private String mEmail;
 	private String mPassword;
 
-	// UI references.
+	// Values for name, email and password at the time of the signup attempt.
+	private String mSignupName;
+	private String mSignupEmail;
+	private String mSignupPassword;
+
+	@Pref
+	AppPrefs_ prefs;
+
+	// Sign in UI references.
 	@ViewById(R.id.email)
 	EditText mEmailView;
 
 	@ViewById(R.id.password)
 	EditText mPasswordView;
 
-	@ViewById(R.id.login_form)
-	View mLoginFormView;
+	@ViewById(R.id.scroll_form)
+	View mScrollFormView;
 
 	@ViewById(R.id.login_status)
 	View mLoginStatusView;
@@ -71,19 +85,50 @@ public class LoginActivity extends Activity {
 	@ViewById(R.id.sign_in_button)
 	Button mSignInButton;
 
-	@AfterInject
-	void init() {
+	// Sign up UI references.
+	@ViewById(R.id.signup_name)
+	EditText mSignupNameView;
 
-	}
+	@ViewById(R.id.signup_email)
+	EditText mSignupEmailView;
+
+	@ViewById(R.id.signup_password)
+	EditText mSignupPasswordView;
+
+	@ViewById(R.id.signup_button)
+	Button mSignupButton;
 
 	@AfterViews()
 	void initViews() {
 
+		// Set up the action bar
 		setupActionBar();
 
 		// Set up the login form.
-		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
-		mEmailView.setText(mEmail);
+		setupLoginForm();
+
+		// Set up the login form.
+		setupSignupForm();
+	}
+
+	/**
+	 * Set up the login form views
+	 */
+	@UiThread
+	void setupLoginForm() {
+
+		String mEmailFromIntent = getIntent().getStringExtra(EXTRA_EMAIL);
+		mEmail = mEmailFromIntent != null && !mEmailFromIntent.isEmpty() ? mEmailFromIntent : null;
+		
+		String mEmailFromPrefs = prefs.userEmail().get();
+		mEmail = mEmailFromPrefs != null && !mEmailFromPrefs.isEmpty() ? mEmailFromPrefs : null;
+		
+		if(mEmail == null) {
+			mEmailView.setText("");
+		}
+		else {
+			mEmailView.setText(mEmail);
+		}
 
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
@@ -100,6 +145,34 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
+			}
+		});
+	}
+
+	/**
+	 * Set up the signup form views
+	 */
+	@UiThread
+	void setupSignupForm() {
+
+		mSignupEmail = getIntent().getStringExtra(EXTRA_EMAIL);
+		mSignupEmailView.setText(mSignupEmail);
+
+		mSignupPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+				if (id == R.id.login || id == EditorInfo.IME_NULL) {
+					attemptLogin();
+					return true;
+				}
+				return false;
+			}
+		});
+
+		mSignupButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				attemptSignup();
 			}
 		});
 	}
@@ -126,7 +199,7 @@ public class LoginActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		
+
 		if (mAuthTask != null) {
 			return;
 		}
@@ -173,9 +246,119 @@ public class LoginActivity extends Activity {
 			// perform the user login attempt.
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
+			performLoginBackground(mEmail, mPassword);
 		}
+	}
+
+	/**
+	 * Attempts to sign up the account specified by the signup form.
+	 */
+	public void attemptSignup() {
+
+		if (mAuthTask != null) {
+			return;
+		}
+
+		// Reset errors.
+		mSignupNameView.setError(null);
+		mSignupEmailView.setError(null);
+		mSignupPasswordView.setError(null);
+
+		// Store values at the time of the login attempt.
+		mSignupName = mSignupNameView.getText().toString();
+		mSignupEmail = mSignupEmailView.getText().toString();
+		mSignupPassword = mSignupPasswordView.getText().toString();
+
+		boolean cancel = false;
+		View focusView = null;
+
+		// Check for a valid name.
+		if (TextUtils.isEmpty(mSignupName)) {
+			mSignupNameView.setError(getString(R.string.error_field_required));
+			focusView = mSignupNameView;
+			cancel = true;
+		}
+
+		// Check for a valid password.
+		if (TextUtils.isEmpty(mSignupPassword)) {
+			mSignupPasswordView.setError(getString(R.string.error_field_required));
+			focusView = mSignupPasswordView;
+			cancel = true;
+		} else if (mSignupPassword.length() < 4) {
+			mSignupPasswordView.setError(getString(R.string.error_invalid_password));
+			focusView = mSignupPasswordView;
+			cancel = true;
+		}
+
+		// Check for a valid email address.
+		if (TextUtils.isEmpty(mSignupEmail)) {
+			mSignupEmailView.setError(getString(R.string.error_field_required));
+			focusView = mSignupEmailView;
+			cancel = true;
+		} else if (!mSignupEmail.contains("@")) {
+			mSignupEmailView.setError(getString(R.string.error_invalid_email));
+			focusView = mSignupEmailView;
+			cancel = true;
+		}
+
+		if (cancel) {
+			// There was an error; don't attempt login and focus the first
+			// form field with an error.
+			focusView.requestFocus();
+		} else {
+			// Show a progress spinner, and kick off a background task to
+			// perform the user login attempt.
+			mLoginStatusMessageView.setText(R.string.login_progress_signing_up);
+			showProgress(true);
+			performSignupBackground(mSignupName, mSignupEmail, mSignupPassword);
+		}
+	}
+
+	@Background
+	void performSignupBackground(String name, String email, String password) {
+		try {
+
+			User user = User.createAndSave(name, email, password);
+			String welcomeMessage = getString(R.string.login_welcome_signuppre);
+			welcomeMessage = welcomeMessage.concat(user.getName()).concat(
+					getString(R.string.login_welcome_signuppost));
+			toastMessage(welcomeMessage);
+			notifySuccess(user);
+
+		} catch (AppParseException e) {
+			e.printStackTrace();
+			toastMessage(e.getMessage());
+		}
+	}
+
+	@Background
+	void performLoginBackground(String email, String password) {
+
+		try {
+
+			User user = User.findByCredentials(email, password);
+			String welcomeMessage = getString(R.string.login_welcome_signinpre).concat(" ");
+			welcomeMessage = welcomeMessage.concat(user.getName()).concat(
+					getString(R.string.login_welcome_signinpost));
+			toastMessage(welcomeMessage);
+			notifySuccess(user);
+
+		} catch (AppParseException e) {
+			e.printStackTrace();
+			toastMessage(e.getMessage());
+		}
+	}
+
+	@UiThread
+	void toastMessage(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+
+	@UiThread
+	void notifySuccess(User user) {
+		prefs.userEmail().put(user.getEmail());
+		prefs.userName().put(user.getName());
+		this.finish();
 	}
 
 	/**
@@ -198,19 +381,19 @@ public class LoginActivity extends Activity {
 						}
 					});
 
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
+			mScrollFormView.setVisibility(View.VISIBLE);
+			mScrollFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+							mScrollFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 						}
 					});
 		} else {
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+			mScrollFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
 

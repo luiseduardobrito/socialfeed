@@ -42,8 +42,8 @@ public final class MainActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
-        mMessageList = MessageListManager_.getInstance_(this);
         push = AppPushManager_.getInstance_(this);
+        mMessageList = MessageListManager_.getInstance_(this);
         init();
         OnViewChangedNotifier.registerOnViewChangedListener(this);
     }

@@ -2,9 +2,11 @@
 <resources>
 
     <color name="purple">#500050</color>
-    <color name="disabled">#8c8c8c</color>
     <color name="dark_purple">#200020</color>
-    
     <color name="white">#FAFAFA</color>
+    <color name="disabled">#8c8c8c</color>
+    
+    <!-- Feed -->
+    <color name="feed_bg">#ededed</color>
 
 </resources>
