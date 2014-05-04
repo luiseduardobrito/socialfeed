@@ -6,11 +6,14 @@
 package io.github.luiseduardobrito.social.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import io.github.luiseduardobrito.social.R.layout;
+import io.github.luiseduardobrito.social.model.MessageListManager_;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
@@ -22,6 +25,7 @@ public final class PlaceholderFragment_
 
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
     private View contentView_;
+    private Handler handler_ = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,8 @@ public final class PlaceholderFragment_
 
     private void init_(Bundle savedInstanceState) {
         OnViewChangedNotifier.registerOnViewChangedListener(this);
+        mMessageList = MessageListManager_.getInstance_(getActivity());
+        init();
     }
 
     @Override
@@ -65,6 +71,34 @@ public final class PlaceholderFragment_
     public void onViewChanged(HasViews hasViews) {
         feed = ((ListView) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.feed));
         initViews();
+    }
+
+    @Override
+    public void refreshAdapter() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                PlaceholderFragment_.super.refreshAdapter();
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void toastError(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                PlaceholderFragment_.super.toastError(message);
+            }
+
+        }
+        );
     }
 
     public static class FragmentBuilder_ {

@@ -63,6 +63,33 @@
                 android:spinnerMode="dialog" />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/points_layout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/white"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/points_label"
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:paddingRight="15dp"
+                android:text="Points:" />
+
+            <EditText
+                android:id="@+id/points_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/points_label" 
+                android:inputType="number"/>
+        </RelativeLayout>
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="fill_parent"
@@ -75,11 +102,12 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/submit_message"
         android:layout_width="fill_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:background="@color/purple"
-        android:textColor="@color/white"
-        android:text="Send" />
+        android:text="Send"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

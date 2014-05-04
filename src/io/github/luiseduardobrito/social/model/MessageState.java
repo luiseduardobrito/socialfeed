@@ -49,4 +49,15 @@ public enum MessageState {
 	public Boolean isVisible() {
 		return this.visible;
 	}
+	
+	public static MessageState fromString(String text) {
+		if (text != null) {
+			for (MessageState b : MessageState.values()) {
+				if (text.equalsIgnoreCase(b.name)) {
+					return b;
+				}
+			}
+		}
+		return null;
+	}
 }

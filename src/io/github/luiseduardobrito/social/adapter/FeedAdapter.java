@@ -3,14 +3,13 @@
  */
 package io.github.luiseduardobrito.social.adapter;
 
-import io.github.luiseduardobrito.social.R;
+import io.github.luiseduardobrito.social.exception.AppParseException;
 import io.github.luiseduardobrito.social.model.Message;
-import io.github.luiseduardobrito.social.model.MessageState;
-import io.github.luiseduardobrito.social.model.MessageType;
-import io.github.luiseduardobrito.social.model.message.PhotoMessage;
-import io.github.luiseduardobrito.social.model.message.VideoMessage;
 import io.github.luiseduardobrito.social.view.CardView;
 import io.github.luiseduardobrito.social.view.CardView_;
+
+import java.util.List;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +21,22 @@ import android.widget.BaseAdapter;
  */
 public class FeedAdapter extends BaseAdapter {
 
-	String[] list;
+	List<Message> list;
 	Context context;
 
-	public FeedAdapter(Context context) {
+	public FeedAdapter(Context context, List<Message> list) throws AppParseException {
 		this.context = context;
-		list = context.getResources().getStringArray(R.array.feed);
+		this.refresh(list);
+	}
+	
+	public void refresh(List<Message> list) throws AppParseException {
+		this.list = list;
+		this.notifyDataSetChanged();
 	}
 
 	@Override
 	public int getCount() {
-		return list.length;
+		return list.size();
 	}
 
 	/*
@@ -42,7 +46,7 @@ public class FeedAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		return list[position];
+		return list.get(position);
 	}
 
 	/*
@@ -64,7 +68,6 @@ public class FeedAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		Message msg;
 		CardView view;
 
 		if (convertView != null) {
@@ -75,21 +78,7 @@ public class FeedAdapter extends BaseAdapter {
 			view = CardView_.build(context);
 		}
 
-		if (position == 0) {
-			msg = (Message) new VideoMessage(list[position], "1 hora atrás", 10);
-
-		}
-
-		else if (position == 1) {
-			msg = (Message) new PhotoMessage(list[position], "2 horas atrás", 15);
-		}
-
-		else {
-			msg = new Message(list[position], MessageType.CHECKLIST, MessageState.OPENED,
-					"5 horas atrás", 5);
-		}
-
-		view.bind(msg);
+		view.bind(list.get(position));
 		return view;
 	}
 }

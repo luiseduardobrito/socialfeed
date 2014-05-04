@@ -2,22 +2,31 @@ package io.github.luiseduardobrito.social.activity;
 
 import io.github.luiseduardobrito.social.NavigationDrawerFragment;
 import io.github.luiseduardobrito.social.R;
+import io.github.luiseduardobrito.social.exception.AppParseException;
+import io.github.luiseduardobrito.social.model.MessageListManager;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
+import android.widget.Toast;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+	@Bean
+	MessageListManager mMessageList;
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -88,6 +97,23 @@ public class MainActivity extends Activity implements
 
 	@OptionsItem
 	void actionAdd() {
-		CreatorActivity_.intent(this).startForResult(0);
+		CreatorActivity_.intent(this).startForResult(CreatorActivity.REQUEST_CREATE);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		super.onActivityResult(requestCode, resultCode, data);
+
+		try {
+			mMessageList.refresh();
+		} catch (AppParseException e) {
+			toastError(e.getMessage());
+		}
+	}
+
+	@UiThread
+	void toastError(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
 }

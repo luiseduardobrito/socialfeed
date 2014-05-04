@@ -4,8 +4,6 @@
 package io.github.luiseduardobrito.social.view;
 
 import io.github.luiseduardobrito.social.R;
-import io.github.luiseduardobrito.social.R.id;
-import io.github.luiseduardobrito.social.R.layout;
 import io.github.luiseduardobrito.social.model.Message;
 import io.github.luiseduardobrito.social.model.MessageState;
 

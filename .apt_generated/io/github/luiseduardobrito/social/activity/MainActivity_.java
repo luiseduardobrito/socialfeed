@@ -9,6 +9,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import io.github.luiseduardobrito.social.R.id;
 import io.github.luiseduardobrito.social.R.layout;
+import io.github.luiseduardobrito.social.model.MessageListManager_;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
@@ -26,6 +29,7 @@ public final class MainActivity_
 {
 
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
+    private Handler handler_ = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public final class MainActivity_
     }
 
     private void init_(Bundle savedInstanceState) {
+        mMessageList = MessageListManager_.getInstance_(this);
         OnViewChangedNotifier.registerOnViewChangedListener(this);
     }
 
@@ -94,6 +99,20 @@ public final class MainActivity_
     @Override
     public void onViewChanged(HasViews hasViews) {
         init();
+    }
+
+    @Override
+    public void toastError(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                MainActivity_.super.toastError(message);
+            }
+
+        }
+        );
     }
 
     public static class IntentBuilder_ {

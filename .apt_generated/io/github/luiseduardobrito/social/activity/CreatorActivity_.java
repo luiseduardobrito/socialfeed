@@ -9,15 +9,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.VideoView;
 import io.github.luiseduardobrito.social.R.id;
 import io.github.luiseduardobrito.social.R.layout;
+import io.github.luiseduardobrito.social.model.MessageListManager_;
+import io.github.luiseduardobrito.social.model.MessageType;
+import org.androidannotations.api.BackgroundExecutor;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
@@ -28,6 +36,7 @@ public final class CreatorActivity_
 {
 
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
+    private Handler handler_ = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public final class CreatorActivity_
 
     private void init_(Bundle savedInstanceState) {
         OnViewChangedNotifier.registerOnViewChangedListener(this);
+        mMessageList = MessageListManager_.getInstance_(this);
     }
 
     @Override
@@ -74,8 +84,26 @@ public final class CreatorActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+        mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
         mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
         mImageView = ((ImageView) hasViews.findViewById(id.imageView));
+        typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
+        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
+        {
+            View view = hasViews.findViewById(id.submit_message);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        CreatorActivity_.this.submitMessage();
+                    }
+
+                }
+                );
+            }
+        }
     }
 
     @Override
@@ -92,19 +120,65 @@ public final class CreatorActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_gallery) {
-            actionGallery();
+        if (itemId_ == id.action_capture) {
+            actionCapture();
             return true;
         }
         if (itemId_ == id.action_video) {
             actionVideo();
             return true;
         }
-        if (itemId_ == id.action_capture) {
-            actionCapture();
+        if (itemId_ == id.action_gallery) {
+            actionGallery();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void dimissDialog() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                CreatorActivity_.super.dimissDialog();
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void notifyErrorResult(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                CreatorActivity_.super.notifyErrorResult(message);
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void createAndSaveInBackground(final String title, final MessageType type, final Integer points) {
+        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0, "") {
+
+
+            @Override
+            public void execute() {
+                try {
+                    CreatorActivity_.super.createAndSaveInBackground(title, type, points);
+                } catch (Throwable e) {
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                }
+            }
+
+        }
+        );
     }
 
     public static class IntentBuilder_ {

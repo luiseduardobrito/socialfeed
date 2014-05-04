@@ -3,11 +3,15 @@
  */
 package io.github.luiseduardobrito.social.model;
 
+import io.github.luiseduardobrito.social.exception.AppParseException;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 /**
  * @author Luis Eduardo Brito
@@ -24,31 +28,92 @@ public class Message extends Observable {
 
 	private List<Message> answers;
 
-	public static ParseObject saveParseObject(Message message) throws ParseException {
+	protected static Message fromParseObject(ParseObject mMessageObject) throws ParseException {
+
+		String title = mMessageObject.getString("title");
+		MessageType type = MessageType.fromString(mMessageObject.getString("type"));
+
+		Message message = new Message(title, type);
+		message.setState(MessageState.fromString(mMessageObject.getString("state")));
+		message.setPoints(mMessageObject.getNumber("points").intValue());
+
+		return message;
+	}
+
+	protected static ParseObject createParseObject(Message message) throws ParseException {
 		ParseObject mMessageObject = new ParseObject("Message");
 		mMessageObject.put("title", message.getTitle());
-		mMessageObject.put("type", message.getType());
-		mMessageObject.put("state", message.getState());
-		mMessageObject.save();
+		mMessageObject.put("type", message.getType().toString());
+		mMessageObject.put("state", message.getState().toString());
+		mMessageObject.put("points", message.getPoints());
 		return mMessageObject;
 	}
 
-	public static Message createAndSave(String title, MessageType type) throws ParseException {
+	protected static ParseObject saveParseObject(Message message) throws AppParseException {
+
+		try {
+
+			ParseObject mMessageObject = createParseObject(message);
+			mMessageObject.save();
+			return mMessageObject;
+
+		} catch (ParseException e) {
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	protected static List<ParseObject> findParseObjects() throws AppParseException {
+
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+
+		try {
+			return query.find();
+		} catch (ParseException e) {
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	public static List<Message> find() throws AppParseException {
+
+		List<Message> mMessageList = new ArrayList<Message>();
+
+		try {
+
+			for (ParseObject p : findParseObjects()) {
+				mMessageList.add(Message.fromParseObject(p));
+			}
+
+		} catch (ParseException e) {
+			throw AppParseException.fromParse(e);
+		}
+
+		return mMessageList;
+	}
+
+	public static Message createAndSave(String title, MessageType type, Integer points)
+			throws AppParseException {
 		Message message = new Message(title, type);
+		message.setPoints(points);
 		saveParseObject(message);
 		return message;
+	}
+
+	public static Message createAndSave(String title, MessageType type) throws AppParseException {
+		return createAndSave(title, type, 0);
 	}
 
 	public Message(String title, MessageType type) {
 		this.title = title;
 		this.type = type;
 		this.state = MessageState.SENT;
+		this.points = 0;
 	}
 
 	public Message(String title, MessageType type, MessageState state) {
 		this.title = title;
 		this.type = type;
 		this.state = state;
+		this.points = 0;
 	}
 
 	public Message(String title, MessageType type, MessageState state, String timestamp) {
@@ -56,6 +121,7 @@ public class Message extends Observable {
 		this.type = type;
 		this.state = state;
 		this.timestamp = timestamp;
+		this.points = 0;
 	}
 
 	public Message(String title, MessageType type, MessageState state, String timestamp,

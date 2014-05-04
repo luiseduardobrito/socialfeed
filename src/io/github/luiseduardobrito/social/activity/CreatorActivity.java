@@ -1,6 +1,10 @@
 package io.github.luiseduardobrito.social.activity;
 
 import io.github.luiseduardobrito.social.R;
+import io.github.luiseduardobrito.social.exception.AppParseException;
+import io.github.luiseduardobrito.social.model.Message;
+import io.github.luiseduardobrito.social.model.MessageListManager;
+import io.github.luiseduardobrito.social.model.MessageType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,12 +16,17 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,7 +37,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -37,12 +48,32 @@ import android.widget.VideoView;
 public class CreatorActivity extends Activity {
 
 	static final String TAG = "CREATOR";
-	static final int REQUEST_IMAGE_CAPTURE = 1;
-	static final int REQUEST_VIDEO_CAPTURE = 2;
-	static final int REQUEST_IMAGE_PICKER = 3;
+	
+	public static final int REQUEST_CREATE = 100;
+	
+	public static final int RESULT_OK = Activity.RESULT_OK;
+	public static final int RESULT_CANCEL = Activity.RESULT_CANCELED;
+	public static final int RESULT_ERROR = 201;
+	
+	protected static final int INTENT_REQUEST_IMAGE_CAPTURE = 301;
+	protected static final int INTENT_REQUEST_VIDEO_CAPTURE = 302;
+	protected static final int INTENT_REQUEST_IMAGE_PICKER = 303;
 
 	File file;
 	String mCurrentPhotoPath;
+	ProgressDialog mProgressDialog;
+	
+	@Bean
+	MessageListManager mMessageList;
+
+	@ViewById(R.id.title_edit)
+	EditText mTitleEdit;
+
+	@ViewById(R.id.points_edit)
+	EditText mPointsEdit;
+
+	@ViewById(R.id.type_edit)
+	Spinner typeSpinner;
 
 	@ViewById(R.id.imageView)
 	ImageView mImageView;
@@ -50,11 +81,49 @@ public class CreatorActivity extends Activity {
 	@ViewById(R.id.videoView)
 	VideoView mVideoView;
 
+	@Click
+	void submitMessage() {
+		
+		mProgressDialog = ProgressDialog.show(this, null, "Loading...");				
+		
+		Integer points = Integer.valueOf(mPointsEdit.getText().toString());
+		String title = mTitleEdit.getText().toString();
+		MessageType type = MessageType.fromString(typeSpinner.getSelectedItem().toString());
+
+		createAndSaveInBackground(title, type, points);
+	}
+
+	@Background
+	void createAndSaveInBackground(String title, MessageType type, Integer points) {
+
+		try {
+
+			Message.createAndSave(title, type, points);
+			mMessageList.refresh();
+			dimissDialog();
+			this.finish();
+
+		} catch (AppParseException e) {
+			notifyErrorResult(e.getMessage());
+		}
+	}
+
+	@UiThread
+	void notifyErrorResult(String message) {
+		dimissDialog();
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+	
+	@UiThread
+	void dimissDialog() {
+		mProgressDialog.dismiss();
+	}
+
 	@OptionsItem
 	void actionCapture() {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+			startActivityForResult(takePictureIntent, INTENT_REQUEST_IMAGE_CAPTURE);
 		}
 	}
 
@@ -62,7 +131,7 @@ public class CreatorActivity extends Activity {
 	void actionVideo() {
 		Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-			startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+			startActivityForResult(takeVideoIntent, INTENT_REQUEST_VIDEO_CAPTURE);
 		}
 	}
 
@@ -70,13 +139,13 @@ public class CreatorActivity extends Activity {
 	void actionGallery() {
 		Intent i = new Intent(Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		startActivityForResult(i, REQUEST_IMAGE_PICKER);
+		startActivityForResult(i, INTENT_REQUEST_IMAGE_PICKER);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && null != intent) {
+		if (requestCode == INTENT_REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && null != intent) {
 
 			Bundle extras = intent.getExtras();
 			Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -86,11 +155,11 @@ public class CreatorActivity extends Activity {
 
 			mVideoView.setVisibility(View.GONE);
 			mImageView.setVisibility(View.VISIBLE);
-			
+
 			mImageView.setImageBitmap(imageBitmap);
 		}
 
-		else if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK && null != intent) {
+		else if (requestCode == INTENT_REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK && null != intent) {
 
 			Uri videoUri = intent.getData();
 
@@ -100,13 +169,13 @@ public class CreatorActivity extends Activity {
 			mVideoView.setVideoURI(videoUri);
 		}
 
-		else if (requestCode == REQUEST_IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
-			
+		else if (requestCode == INTENT_REQUEST_IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
+
 			Bitmap bitmap = getBitmapFromCameraData(intent, this);
-			
+
 			mVideoView.setVisibility(View.GONE);
 			mImageView.setVisibility(View.VISIBLE);
-			
+
 			mImageView.setImageBitmap(bitmap);
 		}
 

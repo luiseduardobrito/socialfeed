@@ -5,15 +5,24 @@ package io.github.luiseduardobrito.social.activity;
 
 import io.github.luiseduardobrito.social.R;
 import io.github.luiseduardobrito.social.adapter.FeedAdapter;
+import io.github.luiseduardobrito.social.exception.AppParseException;
+import io.github.luiseduardobrito.social.model.MessageListManager;
 
+import java.util.Observable;
+import java.util.Observer;
+
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * @author Luis Eduardo Brito
@@ -23,9 +32,12 @@ import android.widget.ListView;
  * A placeholder fragment containing a simple view.
  */
 @EFragment(R.layout.fragment_main)
-public class PlaceholderFragment extends Fragment {
+public class PlaceholderFragment extends Fragment implements Observer {
 
 	FeedAdapter adapter;
+
+	@Bean
+	MessageListManager mMessageList;
 
 	@ViewById(R.id.feed)
 	ListView feed;
@@ -48,15 +60,50 @@ public class PlaceholderFragment extends Fragment {
 		return fragment;
 	}
 
+	@AfterInject
+	void init() {
+		mMessageList.addObserver(this);
+	}
+
 	@AfterViews
 	void initViews() {
-		adapter = new FeedAdapter(getActivity());
+
+		try {
+			adapter = new FeedAdapter(getActivity(), mMessageList.get());
+		} catch (AppParseException e) {
+			toastError(e.getMessage());
+		}
+
 		feed.setAdapter(adapter);
+	}
+
+	@UiThread
+	void toastError(String message) {
+		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	@Override
+	public void update(Observable observable, Object data) {
+		refreshAdapter();
+	}
+
+	@UiThread
+	void refreshAdapter() {
+		try {
+			adapter.refresh(mMessageList.get());
+		} catch (AppParseException e) {
+			toastError(e.getMessage());
+		}
 	}
 }

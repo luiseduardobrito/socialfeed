@@ -34,4 +34,15 @@ public enum MessageType {
 	public int getResourceId() {
 		return this.resource;
 	}
+	
+	public static MessageType fromString(String text) {
+		if (text != null) {
+			for (MessageType b : MessageType.values()) {
+				if (text.equalsIgnoreCase(b.name)) {
+					return b;
+				}
+			}
+		}
+		return null;
+	}
 }
