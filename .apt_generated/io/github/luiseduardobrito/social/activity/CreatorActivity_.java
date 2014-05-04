@@ -85,10 +85,10 @@ public final class CreatorActivity_
     @Override
     public void onViewChanged(HasViews hasViews) {
         mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
-        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
-        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
         mImageView = ((ImageView) hasViews.findViewById(id.imageView));
+        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
+        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         {
             View view = hasViews.findViewById(id.submit_message);
             if (view!= null) {
@@ -120,6 +120,10 @@ public final class CreatorActivity_
             return true;
         }
         int itemId_ = item.getItemId();
+        if (itemId_ == id.action_capture) {
+            actionCapture();
+            return true;
+        }
         if (itemId_ == id.action_video) {
             actionVideo();
             return true;
@@ -128,25 +132,7 @@ public final class CreatorActivity_
             actionGallery();
             return true;
         }
-        if (itemId_ == id.action_capture) {
-            actionCapture();
-            return true;
-        }
         return false;
-    }
-
-    @Override
-    public void dimissDialog() {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                CreatorActivity_.super.dimissDialog();
-            }
-
-        }
-        );
     }
 
     @Override
@@ -157,6 +143,20 @@ public final class CreatorActivity_
             @Override
             public void run() {
                 CreatorActivity_.super.notifyErrorResult(message);
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void dimissDialog() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                CreatorActivity_.super.dimissDialog();
             }
 
         }

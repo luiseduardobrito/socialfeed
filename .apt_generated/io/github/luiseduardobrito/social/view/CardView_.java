@@ -67,10 +67,10 @@ public final class CardView_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        creator = ((TextView) hasViews.findViewById(id.creator));
-        icon = ((ImageView) hasViews.findViewById(id.icon));
         points = ((TextView) hasViews.findViewById(id.points));
         label = ((TextView) hasViews.findViewById(id.label));
+        icon = ((ImageView) hasViews.findViewById(id.icon));
+        creator = ((TextView) hasViews.findViewById(id.creator));
     }
 
 }

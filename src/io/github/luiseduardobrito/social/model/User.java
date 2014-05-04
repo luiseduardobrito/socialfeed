@@ -157,6 +157,12 @@ public class User extends Observable {
 		changeAndNotify();
 	}
 
+	/**
+	 * Get the ParseUser object for the instance User
+	 * 
+	 * @return
+	 * @throws AppParseException
+	 */
 	public ParseUser getParseObject() throws AppParseException {
 		try {
 			return ParseUser.getQuery().get(this.getObjectId());
@@ -164,5 +170,10 @@ public class User extends Observable {
 			e.printStackTrace();
 			throw AppParseException.fromParse(e);
 		}
+	}
+
+	public List<Message> getInbox() {
+		
+		return null;
 	}
 }

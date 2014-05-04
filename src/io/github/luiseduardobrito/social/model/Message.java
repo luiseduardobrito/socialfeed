@@ -27,6 +27,11 @@ public class Message extends Observable {
 
 	private User creator;
 
+	/**
+	 * @param mMessageObject
+	 * @return
+	 * @throws ParseException
+	 */
 	protected static Message fromParseObject(ParseObject mMessageObject) throws ParseException {
 
 		String title = mMessageObject.getString("title");
@@ -40,6 +45,11 @@ public class Message extends Observable {
 		return message;
 	}
 
+	/**
+	 * @param message
+	 * @return
+	 * @throws ParseException
+	 */
 	protected static ParseObject createParseObject(Message message) throws ParseException {
 		ParseObject mMessageObject = new ParseObject("Message");
 		mMessageObject.put("title", message.getTitle());
@@ -50,6 +60,11 @@ public class Message extends Observable {
 		return mMessageObject;
 	}
 
+	/**
+	 * @param message
+	 * @return
+	 * @throws AppParseException
+	 */
 	protected static ParseObject saveParseObject(Message message) throws AppParseException {
 
 		try {
@@ -63,7 +78,11 @@ public class Message extends Observable {
 		}
 	}
 
-	protected static List<ParseObject> findParseObjects() throws AppParseException {
+	/**
+	 * @return
+	 * @throws AppParseException
+	 */
+	protected static List<ParseObject> findParseObject() throws AppParseException {
 
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
 
@@ -74,13 +93,34 @@ public class Message extends Observable {
 		}
 	}
 
+	/**
+	 * @param objectId
+	 * @return
+	 * @throws AppParseException
+	 */
+	protected static ParseObject findByIdParseObjects(String objectId) throws AppParseException {
+
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+		try {
+			return query.get(objectId);
+		} catch (ParseException e) {
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	/**
+	 * Get full message list
+	 * 
+	 * @return
+	 * @throws AppParseException
+	 */
 	public static List<Message> find() throws AppParseException {
 
 		List<Message> mMessageList = new ArrayList<Message>();
 
 		try {
 
-			for (ParseObject p : findParseObjects()) {
+			for (ParseObject p : findParseObject()) {
 				mMessageList.add(Message.fromParseObject(p));
 			}
 
@@ -91,6 +131,110 @@ public class Message extends Observable {
 		return mMessageList;
 	}
 
+	/**
+	 * Get single message by objectId
+	 * 
+	 * @param objectId
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static Message findById(String objectId) throws AppParseException {
+		try {
+			return Message.fromParseObject(findByIdParseObjects(objectId));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	/**
+	 * Find messages by creator instance
+	 * 
+	 * @param creator
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static List<Message> findByCreator(User creator) throws AppParseException {
+		return findByCreator(creator.getObjectId());
+	}
+
+	/**
+	 * Find messages by creator id
+	 * 
+	 * @param creatorId
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static List<Message> findByCreator(String creatorId) throws AppParseException {
+
+		List<Message> result = new ArrayList<Message>();
+
+		try {
+
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+			query.whereEqualTo("creator", creatorId);
+
+			for (ParseObject mParseObject : query.find()) {
+				result.add(Message.fromParseObject(mParseObject));
+			}
+
+			return result;
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	/**
+	 * Get messages not created by user instance
+	 * 
+	 * @param user
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static List<Message> getUserFeed(User user) throws AppParseException {
+		return getUserFeed(user.getObjectId());
+	}
+
+	/**
+	 * Get messages not created by user referenced by userId
+	 * 
+	 * @param userId
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static List<Message> getUserFeed(String userId) throws AppParseException {
+
+		List<Message> result = new ArrayList<Message>();
+
+		try {
+
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+			query.whereNotEqualTo("creator", userId);
+
+			for (ParseObject mParseObject : query.find()) {
+				result.add(Message.fromParseObject(mParseObject));
+			}
+
+			return result;
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+			throw AppParseException.fromParse(e);
+		}
+	}
+
+	/**
+	 * Create a new message and save it in Parse
+	 * 
+	 * @param title
+	 * @param type
+	 * @param creator
+	 * @param points
+	 * @return
+	 * @throws AppParseException
+	 */
 	public static Message createAndSave(String title, MessageType type, User creator, Integer points)
 			throws AppParseException {
 		Message message = new Message(title, type, creator);
@@ -99,11 +243,27 @@ public class Message extends Observable {
 		return message;
 	}
 
+	/**
+	 * Create a new message and save it in Parse
+	 * 
+	 * @param title
+	 * @param type
+	 * @param creator
+	 * @return
+	 * @throws AppParseException
+	 */
 	public static Message createAndSave(String title, MessageType type, User creator)
 			throws AppParseException {
 		return createAndSave(title, type, creator, 0);
 	}
 
+	/**
+	 * Create a new message
+	 * 
+	 * @param title
+	 * @param type
+	 * @param creator
+	 */
 	public Message(String title, MessageType type, User creator) {
 		this.title = title;
 		this.type = type;
@@ -112,6 +272,14 @@ public class Message extends Observable {
 		this.points = 0;
 	}
 
+	/**
+	 * Create a new message
+	 * 
+	 * @param title
+	 * @param type
+	 * @param creator
+	 * @param state
+	 */
 	public Message(String title, MessageType type, User creator, MessageState state) {
 		this.title = title;
 		this.type = type;
@@ -120,6 +288,15 @@ public class Message extends Observable {
 		this.points = 0;
 	}
 
+	/**
+	 * Create a new message
+	 * 
+	 * @param title
+	 * @param type
+	 * @param creator
+	 * @param state
+	 * @param points
+	 */
 	public Message(String title, MessageType type, User creator, MessageState state, Integer points) {
 		this.title = title;
 		this.type = type;
@@ -128,47 +305,87 @@ public class Message extends Observable {
 		this.points = points;
 	}
 
+	/**
+	 * Set observable instance as changed and notify observers
+	 */
 	private void changeAndNotify() {
 		this.setChanged();
 		this.notifyObservers();
 	}
 
+	/**
+	 * @return Message state
+	 */
 	public MessageState getState() {
 		return state;
 	}
 
+	/**
+	 * Set message state
+	 * 
+	 * @param state
+	 */
 	public void setState(MessageState state) {
 		this.state = state;
 		changeAndNotify();
 	}
 
+	/**
+	 * @return Message title
+	 */
 	public String getTitle() {
 		return title;
 	}
 
+	/**
+	 * Set message title
+	 * 
+	 * @param title
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 		changeAndNotify();
 	}
 
+	/**
+	 * @return Message type
+	 */
 	public MessageType getType() {
 		return type;
 	}
 
+	/**
+	 * Set message type
+	 * 
+	 * @param type
+	 */
 	public void setType(MessageType type) {
 		this.type = type;
 		changeAndNotify();
 	}
 
+	/**
+	 * Get message reward points
+	 * 
+	 * @return
+	 */
 	public Integer getPoints() {
 		return points;
 	}
 
+	/**
+	 * Set message reward points and notify observers
+	 * 
+	 * @param points
+	 */
 	public void setPoints(Integer points) {
 		this.points = points;
 		changeAndNotify();
 	}
 
+	/**
+	 * @return Message creator instance
+	 */
 	public User getCreator() {
 		return this.creator;
 	}
