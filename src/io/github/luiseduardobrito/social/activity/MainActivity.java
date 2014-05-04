@@ -3,8 +3,11 @@ package io.github.luiseduardobrito.social.activity;
 import io.github.luiseduardobrito.social.NavigationDrawerFragment;
 import io.github.luiseduardobrito.social.R;
 import io.github.luiseduardobrito.social.exception.AppParseException;
+import io.github.luiseduardobrito.social.intent.AppIntentActions;
 import io.github.luiseduardobrito.social.model.MessageListManager;
+import io.github.luiseduardobrito.social.push.AppPushManager;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
@@ -16,14 +19,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.widget.Toast;
+
+import com.parse.ParseAnalytics;
 
 @EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+	@Bean
+	AppPushManager push;
 
 	@Bean
 	MessageListManager mMessageList;
@@ -40,8 +49,20 @@ public class MainActivity extends Activity implements
 	 */
 	private CharSequence mTitle;
 
-	@AfterViews
+	@AfterInject
 	void init() {
+
+		// Prepare push broadcast receiver
+		String action = AppIntentActions.MESSAGE_ARRIVED.toString();
+		IntentFilter intentFilter = new IntentFilter(action);
+		registerReceiver(push.getReceiver(), intentFilter);
+	}
+
+	@AfterViews
+	void initViews() {
+
+		// Parse analytics
+		ParseAnalytics.trackAppOpened(getIntent());
 
 		// Prepare drawer fragment
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()

@@ -19,6 +19,7 @@ import android.view.ViewGroup.LayoutParams;
 import io.github.luiseduardobrito.social.R.id;
 import io.github.luiseduardobrito.social.R.layout;
 import io.github.luiseduardobrito.social.model.MessageListManager_;
+import io.github.luiseduardobrito.social.push.AppPushManager_;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
@@ -42,6 +43,8 @@ public final class MainActivity_
 
     private void init_(Bundle savedInstanceState) {
         mMessageList = MessageListManager_.getInstance_(this);
+        push = AppPushManager_.getInstance_(this);
+        init();
         OnViewChangedNotifier.registerOnViewChangedListener(this);
     }
 
@@ -98,7 +101,7 @@ public final class MainActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        init();
+        initViews();
     }
 
     @Override

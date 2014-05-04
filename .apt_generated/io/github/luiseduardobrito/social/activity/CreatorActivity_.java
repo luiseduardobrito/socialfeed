@@ -84,11 +84,11 @@ public final class CreatorActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+        typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
+        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
         mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
         mImageView = ((ImageView) hasViews.findViewById(id.imageView));
-        typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
-        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         {
             View view = hasViews.findViewById(id.submit_message);
             if (view!= null) {
@@ -124,12 +124,12 @@ public final class CreatorActivity_
             actionCapture();
             return true;
         }
-        if (itemId_ == id.action_video) {
-            actionVideo();
-            return true;
-        }
         if (itemId_ == id.action_gallery) {
             actionGallery();
+            return true;
+        }
+        if (itemId_ == id.action_video) {
+            actionVideo();
             return true;
         }
         return false;
