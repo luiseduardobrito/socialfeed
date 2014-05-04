@@ -67,10 +67,10 @@ public final class CardView_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        points = ((TextView) hasViews.findViewById(id.points));
-        timestamp = ((TextView) hasViews.findViewById(id.timestamp));
-        label = ((TextView) hasViews.findViewById(id.label));
         icon = ((ImageView) hasViews.findViewById(id.icon));
+        timestamp = ((TextView) hasViews.findViewById(id.timestamp));
+        points = ((TextView) hasViews.findViewById(id.points));
+        label = ((TextView) hasViews.findViewById(id.label));
     }
 
 }

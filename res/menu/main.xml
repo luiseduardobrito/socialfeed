@@ -6,6 +6,12 @@
         android:id="@+id/action_add"
         android:showAsAction="always"
         android:icon="@android:drawable/ic_menu_send"
-        android:title="@string/action_example"/>
+        android:title="@string/action_send"/>
+    
+    <item
+        android:id="@+id/action_login"
+        android:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/action_login"/>
 
 </menu>

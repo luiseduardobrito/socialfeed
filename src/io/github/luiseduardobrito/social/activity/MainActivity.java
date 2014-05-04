@@ -3,6 +3,7 @@ package io.github.luiseduardobrito.social.activity;
 import io.github.luiseduardobrito.social.NavigationDrawerFragment;
 import io.github.luiseduardobrito.social.R;
 import io.github.luiseduardobrito.social.exception.AppParseException;
+import io.github.luiseduardobrito.social.fragment.AppFragment;
 import io.github.luiseduardobrito.social.intent.AppIntentActions;
 import io.github.luiseduardobrito.social.model.MessageListManager;
 import io.github.luiseduardobrito.social.push.AppPushManager;
@@ -17,6 +18,7 @@ import org.androidannotations.annotations.UiThread;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -79,8 +81,8 @@ public class MainActivity extends Activity implements
 
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.container, PlaceholderFragment_.newInstance(position + 1)).commit();
+		Fragment fragment = AppFragment.build(position);
+		fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 	}
 
 	public void onSectionAttached(int number) {
@@ -119,6 +121,11 @@ public class MainActivity extends Activity implements
 	@OptionsItem
 	void actionAdd() {
 		CreatorActivity_.intent(this).startForResult(CreatorActivity.REQUEST_CREATE);
+	}
+	
+	@OptionsItem
+	void actionLogin() {
+		LoginActivity_.intent(this).startForResult(CreatorActivity.REQUEST_CREATE);
 	}
 
 	@Override

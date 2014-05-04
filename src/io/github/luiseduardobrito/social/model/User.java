@@ -3,6 +3,7 @@
  */
 package io.github.luiseduardobrito.social.model;
 
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -16,6 +17,8 @@ public class User extends Observable {
 	private String email;
 	private String password;
 
+	private List<Message> messages;
+
 	public User(String name, String email, String password) {
 		this.name = name;
 		this.email = email;
@@ -25,6 +28,10 @@ public class User extends Observable {
 	private void changeAndNotify() {
 		this.setChanged();
 		this.notifyObservers();
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	public String getName() {
@@ -54,7 +61,7 @@ public class User extends Observable {
 		changeAndNotify();
 	}
 
-	public Integer getId() {
-		return id;
+	public List<Message> getMessages() {
+		return messages;
 	}
 }

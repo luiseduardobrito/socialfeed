@@ -33,6 +33,7 @@
 
     <permission
         android:name="io.github.luiseduardobrito.social.permission.PUSH"
+        android:label="@string/push_permission_label"
         android:protectionLevel="normal" />
 
     <uses-permission android:name="io.github.luiseduardobrito.social.permission.PUSH" />
@@ -89,6 +90,16 @@
                 <category android:name="io.github.luiseduardobrito.social" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="io.github.luiseduardobrito.social.activity.LoginActivity_"
+            android:label="@string/title_activity_login"
+            android:parentActivityName="io.github.luiseduardobrito.social.activity.MainActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.github.luiseduardobrito.social.activity.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,9 +1,10 @@
 /**
  * 
  */
-package io.github.luiseduardobrito.social.activity;
+package io.github.luiseduardobrito.social.fragment;
 
 import io.github.luiseduardobrito.social.R;
+import io.github.luiseduardobrito.social.activity.MainActivity;
 import io.github.luiseduardobrito.social.adapter.FeedAdapter;
 import io.github.luiseduardobrito.social.exception.AppParseException;
 import io.github.luiseduardobrito.social.model.MessageListManager;

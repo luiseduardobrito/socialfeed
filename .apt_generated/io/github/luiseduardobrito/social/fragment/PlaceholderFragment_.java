@@ -3,7 +3,7 @@
 //
 
 
-package io.github.luiseduardobrito.social.activity;
+package io.github.luiseduardobrito.social.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;

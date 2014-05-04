@@ -9,28 +9,25 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import io.github.luiseduardobrito.social.R.id;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import io.github.luiseduardobrito.social.R.layout;
-import io.github.luiseduardobrito.social.model.MessageListManager_;
-import io.github.luiseduardobrito.social.push.AppPushManager_;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
 
-public final class MainActivity_
-    extends MainActivity
+public final class LoginActivity_
+    extends LoginActivity
     implements HasViews, OnViewChangedListener
 {
 
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
-    private Handler handler_ = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,14 +35,12 @@ public final class MainActivity_
         init_(savedInstanceState);
         super.onCreate(savedInstanceState);
         OnViewChangedNotifier.replaceNotifier(previousNotifier);
-        setContentView(layout.activity_main);
+        setContentView(layout.activity_login);
     }
 
     private void init_(Bundle savedInstanceState) {
-        mMessageList = MessageListManager_.getInstance_(this);
-        push = AppPushManager_.getInstance_(this);
-        init();
         OnViewChangedNotifier.registerOnViewChangedListener(this);
+        init();
     }
 
     @Override
@@ -66,22 +61,33 @@ public final class MainActivity_
         onViewChangedNotifier_.notifyViewChanged(this);
     }
 
-    public static MainActivity_.IntentBuilder_ intent(Context context) {
-        return new MainActivity_.IntentBuilder_(context);
+    public static LoginActivity_.IntentBuilder_ intent(Context context) {
+        return new LoginActivity_.IntentBuilder_(context);
     }
 
-    public static MainActivity_.IntentBuilder_ intent(android.app.Fragment fragment) {
-        return new MainActivity_.IntentBuilder_(fragment);
+    public static LoginActivity_.IntentBuilder_ intent(android.app.Fragment fragment) {
+        return new LoginActivity_.IntentBuilder_(fragment);
     }
 
-    public static MainActivity_.IntentBuilder_ intent(android.support.v4.app.Fragment supportFragment) {
-        return new MainActivity_.IntentBuilder_(supportFragment);
+    public static LoginActivity_.IntentBuilder_ intent(android.support.v4.app.Fragment supportFragment) {
+        return new LoginActivity_.IntentBuilder_(supportFragment);
+    }
+
+    @Override
+    public void onViewChanged(HasViews hasViews) {
+        mLoginFormView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_form));
+        mEmailView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.email));
+        mSignInButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.sign_in_button));
+        mPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.password));
+        mLoginStatusMessageView = ((TextView) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status_message));
+        mLoginStatusView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status));
+        initViews();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(io.github.luiseduardobrito.social.R.menu.main, menu);
+        menuInflater.inflate(io.github.luiseduardobrito.social.R.menu.login, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -92,34 +98,11 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_login) {
-            actionLogin();
-            return true;
-        }
-        if (itemId_ == id.action_add) {
-            actionAdd();
+        if (itemId_ == android.R.id.home) {
+            actionHome();
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onViewChanged(HasViews hasViews) {
-        initViews();
-    }
-
-    @Override
-    public void toastError(final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                MainActivity_.super.toastError(message);
-            }
-
-        }
-        );
     }
 
     public static class IntentBuilder_ {
@@ -131,26 +114,26 @@ public final class MainActivity_
 
         public IntentBuilder_(Context context) {
             context_ = context;
-            intent_ = new Intent(context, MainActivity_.class);
+            intent_ = new Intent(context, LoginActivity_.class);
         }
 
         public IntentBuilder_(android.app.Fragment fragment) {
             fragment_ = fragment;
             context_ = fragment.getActivity();
-            intent_ = new Intent(context_, MainActivity_.class);
+            intent_ = new Intent(context_, LoginActivity_.class);
         }
 
         public IntentBuilder_(android.support.v4.app.Fragment fragment) {
             fragmentSupport_ = fragment;
             context_ = fragment.getActivity();
-            intent_ = new Intent(context_, MainActivity_.class);
+            intent_ = new Intent(context_, LoginActivity_.class);
         }
 
         public Intent get() {
             return intent_;
         }
 
-        public MainActivity_.IntentBuilder_ flags(int flags) {
+        public LoginActivity_.IntentBuilder_ flags(int flags) {
             intent_.setFlags(flags);
             return this;
         }
