@@ -29,6 +29,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -38,6 +39,8 @@ import com.parse.ParseAnalytics;
 @OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+	private static final String TAG = MainActivity.class.getName();
 
 	@Bean
 	AppNetworkUtil network;
@@ -86,6 +89,23 @@ public class MainActivity extends Activity implements
 
 		// Check network connextion
 		checkNetworkConnection();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onPause()
+	 */
+	@Override
+	protected void onPause() {
+		
+		super.onPause();
+
+		try {
+			unregisterReceiver(push.getReceiver());
+		} catch (Exception e) {
+			Log.d(TAG, "Push receiver could not be unregistered");
+		}
 	}
 
 	@UiThread

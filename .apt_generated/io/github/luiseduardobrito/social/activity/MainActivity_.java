@@ -95,12 +95,12 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_add) {
-            actionAdd();
-            return true;
-        }
         if (itemId_ == id.action_login) {
             actionLogin();
+            return true;
+        }
+        if (itemId_ == id.action_add) {
+            actionAdd();
             return true;
         }
         return false;
@@ -112,20 +112,6 @@ public final class MainActivity_
     }
 
     @Override
-    public void checkNetworkConnection() {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                MainActivity_.super.checkNetworkConnection();
-            }
-
-        }
-        );
-    }
-
-    @Override
     public void toastError(final String message) {
         handler_.post(new Runnable() {
 
@@ -133,6 +119,20 @@ public final class MainActivity_
             @Override
             public void run() {
                 MainActivity_.super.toastError(message);
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void checkNetworkConnection() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                MainActivity_.super.checkNetworkConnection();
             }
 
         }
