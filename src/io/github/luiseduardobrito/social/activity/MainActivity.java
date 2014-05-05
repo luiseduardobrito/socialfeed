@@ -7,9 +7,11 @@ import io.github.luiseduardobrito.social.fragment.NavigationDrawerFragment;
 import io.github.luiseduardobrito.social.intent.AppIntentActions;
 import io.github.luiseduardobrito.social.model.MessageListManager;
 import io.github.luiseduardobrito.social.push.AppPushManager;
+import io.github.luiseduardobrito.social.util.AppNetworkUtil;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -18,8 +20,12 @@ import org.androidannotations.annotations.UiThread;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.widget.DrawerLayout;
@@ -32,6 +38,9 @@ import com.parse.ParseAnalytics;
 @OptionsMenu(R.menu.main)
 public class MainActivity extends Activity implements
 		NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+	@Bean
+	AppNetworkUtil network;
 
 	@Bean
 	AppPushManager push;
@@ -74,6 +83,45 @@ public class MainActivity extends Activity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+
+		// Check network connextion
+		checkNetworkConnection();
+	}
+
+	@UiThread
+	void checkNetworkConnection() {
+
+		if (network.isOnline()) {
+			refreshMessageList();
+		}
+
+		else {
+
+			AlertDialog.Builder dialog = new Builder(this);
+			dialog.setTitle(R.string.network_unavailable_title);
+			dialog.setMessage(R.string.network_unavailable_message);
+			dialog.setCancelable(false);
+
+			dialog.setPositiveButton(R.string.ok, new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					checkNetworkConnection();
+				}
+			});
+
+			dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					finish();
+				}
+			});
+
+			dialog.show();
+		}
 	}
 
 	@Override
@@ -122,6 +170,14 @@ public class MainActivity extends Activity implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == CreatorActivity.REQUEST_CREATE) {
+			refreshMessageList();
+		}
+	}
+
+	@Background
+	void refreshMessageList() {
 
 		try {
 			mMessageList.refresh();

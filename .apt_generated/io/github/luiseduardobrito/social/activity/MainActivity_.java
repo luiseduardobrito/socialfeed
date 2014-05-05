@@ -20,6 +20,8 @@ import io.github.luiseduardobrito.social.R.id;
 import io.github.luiseduardobrito.social.R.layout;
 import io.github.luiseduardobrito.social.model.MessageListManager_;
 import io.github.luiseduardobrito.social.push.AppPushManager_;
+import io.github.luiseduardobrito.social.util.AppNetworkUtil_;
+import org.androidannotations.api.BackgroundExecutor;
 import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
@@ -44,6 +46,7 @@ public final class MainActivity_
     private void init_(Bundle savedInstanceState) {
         push = AppPushManager_.getInstance_(this);
         mMessageList = MessageListManager_.getInstance_(this);
+        network = AppNetworkUtil_.getInstance_(this);
         init();
         OnViewChangedNotifier.registerOnViewChangedListener(this);
     }
@@ -92,12 +95,12 @@ public final class MainActivity_
             return true;
         }
         int itemId_ = item.getItemId();
-        if (itemId_ == id.action_add) {
-            actionAdd();
-            return true;
-        }
         if (itemId_ == id.action_login) {
             actionLogin();
+            return true;
+        }
+        if (itemId_ == id.action_add) {
+            actionAdd();
             return true;
         }
         return false;
@@ -109,6 +112,20 @@ public final class MainActivity_
     }
 
     @Override
+    public void checkNetworkConnection() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                MainActivity_.super.checkNetworkConnection();
+            }
+
+        }
+        );
+    }
+
+    @Override
     public void toastError(final String message) {
         handler_.post(new Runnable() {
 
@@ -116,6 +133,24 @@ public final class MainActivity_
             @Override
             public void run() {
                 MainActivity_.super.toastError(message);
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void refreshMessageList() {
+        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0, "") {
+
+
+            @Override
+            public void execute() {
+                try {
+                    MainActivity_.super.refreshMessageList();
+                } catch (Throwable e) {
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                }
             }
 
         }

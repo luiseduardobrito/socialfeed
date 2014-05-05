@@ -74,20 +74,6 @@ public final class FeedFragment_
     }
 
     @Override
-    public void toastError(final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                FeedFragment_.super.toastError(message);
-            }
-
-        }
-        );
-    }
-
-    @Override
     public void refreshAdapter() {
         handler_.post(new Runnable() {
 
@@ -95,6 +81,20 @@ public final class FeedFragment_
             @Override
             public void run() {
                 FeedFragment_.super.refreshAdapter();
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void toastError(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                FeedFragment_.super.toastError(message);
             }
 
         }

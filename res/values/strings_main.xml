@@ -6,7 +6,8 @@
     <string name="title_section3">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
+	<string name="network_unavailable_title">Network unavailable</string>
+	<string name="network_unavailable_message">You need to be connected to the internet to see your message feed.</string>
     <string-array name="feed">
         <item>Teste 1</item>
         <item>Teste 2</item>

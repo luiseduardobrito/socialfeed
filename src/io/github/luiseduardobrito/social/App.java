@@ -28,6 +28,7 @@ public class App extends Application {
 		Parse.initialize(this, "Rwwzb2fmU0dIY6nx1A4q7DEZB9zlrwaN1RyS8lVK",
 				"wW60eAge3yrD5qk03bS6RSFmQSzWuUjckyXk8qGL");
 
+		Parse.enableLocalDatastore(this);
 		ParseInstallation.getCurrentInstallation().saveInBackground();
 		PushService.subscribe(this, "message", MainActivity_.class);
 		PushService.setDefaultPushCallback(this, MainActivity_.class);

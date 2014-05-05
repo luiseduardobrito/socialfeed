@@ -156,7 +156,19 @@ public class Message extends Observable {
 	 * @throws AppParseException
 	 */
 	public static List<Message> findByCreator(User creator) throws AppParseException {
-		return findByCreator(creator.getParseObject());
+		return findByCreator(creator, false);
+	}
+
+	/**
+	 * Find messages by creator instance
+	 * 
+	 * @param creator
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static List<Message> findByCreator(User creator, Boolean fromLocalDatastore)
+			throws AppParseException {
+		return findByCreator(creator.getParseObject(), fromLocalDatastore);
 	}
 
 	/**
@@ -166,16 +178,27 @@ public class Message extends Observable {
 	 * @return
 	 * @throws AppParseException
 	 */
-	public static List<Message> findByCreator(ParseUser mParseUser) throws AppParseException {
+	public static List<Message> findByCreator(ParseUser mParseUser, Boolean fromLocalDatastore)
+			throws AppParseException {
 
 		List<Message> result = new ArrayList<Message>();
 
 		try {
 
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
-			query.whereEqualTo("creator", mParseUser);
 
-			for (ParseObject mParseObject : query.find()) {
+			if (fromLocalDatastore) {
+				query.fromLocalDatastore();
+			}
+
+			query.whereEqualTo("creator", mParseUser);
+			List<ParseObject> queryResult = query.find();
+
+			if (!fromLocalDatastore) {
+				ParseObject.pinAllInBackground(queryResult);
+			}
+
+			for (ParseObject mParseObject : queryResult) {
 				result.add(Message.fromParseObject(mParseObject));
 			}
 
@@ -195,7 +218,19 @@ public class Message extends Observable {
 	 * @throws AppParseException
 	 */
 	public static List<Message> getUserFeed(User user) throws AppParseException {
-		return getUserFeed(user.getParseObject());
+		return getUserFeed(user.getParseObject(), false);
+	}
+
+	/**
+	 * Get messages not created by user instance
+	 * 
+	 * @param user
+	 * @return
+	 * @throws AppParseException
+	 */
+	public static List<Message> getUserFeed(User user, Boolean fromLocalDatastore)
+			throws AppParseException {
+		return getUserFeed(user.getParseObject(), fromLocalDatastore);
 	}
 
 	/**
@@ -205,16 +240,27 @@ public class Message extends Observable {
 	 * @return
 	 * @throws AppParseException
 	 */
-	public static List<Message> getUserFeed(ParseUser mParseUser) throws AppParseException {
+	public static List<Message> getUserFeed(ParseUser mParseUser, Boolean fromLocalDatastore)
+			throws AppParseException {
 
 		List<Message> result = new ArrayList<Message>();
 
 		try {
 
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
-			query.whereNotEqualTo("creator", mParseUser);
 
-			for (ParseObject mParseObject : query.find()) {
+			if (fromLocalDatastore) {
+				query.fromLocalDatastore();
+			}
+
+			query.whereNotEqualTo("creator", mParseUser);
+			List<ParseObject> queryResult = query.find();
+
+			if (!fromLocalDatastore) {
+				ParseObject.pinAllInBackground(queryResult);
+			}
+
+			for (ParseObject mParseObject : queryResult) {
 				result.add(Message.fromParseObject(mParseObject));
 			}
 

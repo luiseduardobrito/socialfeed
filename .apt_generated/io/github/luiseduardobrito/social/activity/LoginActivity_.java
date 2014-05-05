@@ -83,16 +83,16 @@ public final class LoginActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mLoginStatusMessageView = ((TextView) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status_message));
-        mLoginStatusView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status));
         mSignupButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_button));
         mSignupEmailView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_email));
-        mSignupPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_password));
+        mLoginStatusView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status));
         mScrollFormView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.scroll_form));
         mEmailView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.email));
-        mPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.password));
         mSignupNameView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_name));
+        mLoginStatusMessageView = ((TextView) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status_message));
         mSignInButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.sign_in_button));
+        mPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.password));
+        mSignupPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_password));
         initViews();
     }
 
@@ -118,48 +118,6 @@ public final class LoginActivity_
     }
 
     @Override
-    public void notifySuccess(final User user) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                LoginActivity_.super.notifySuccess(user);
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void setupSignupForm() {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                LoginActivity_.super.setupSignupForm();
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void toastMessage(final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                LoginActivity_.super.toastMessage(message);
-            }
-
-        }
-        );
-    }
-
-    @Override
     public void setupLoginForm() {
         handler_.post(new Runnable() {
 
@@ -167,20 +125,6 @@ public final class LoginActivity_
             @Override
             public void run() {
                 LoginActivity_.super.setupLoginForm();
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void attemptLogin() {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                LoginActivity_.super.attemptLogin();
             }
 
         }
@@ -202,17 +146,55 @@ public final class LoginActivity_
     }
 
     @Override
-    public void performLoginBackground(final String email, final String password) {
-        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0, "") {
+    public void notifySuccess(final User user) {
+        handler_.post(new Runnable() {
 
 
             @Override
-            public void execute() {
-                try {
-                    LoginActivity_.super.performLoginBackground(email, password);
-                } catch (Throwable e) {
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-                }
+            public void run() {
+                LoginActivity_.super.notifySuccess(user);
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void toastMessage(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                LoginActivity_.super.toastMessage(message);
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void setupSignupForm() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                LoginActivity_.super.setupSignupForm();
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void attemptLogin() {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                LoginActivity_.super.attemptLogin();
             }
 
         }
@@ -228,6 +210,24 @@ public final class LoginActivity_
             public void execute() {
                 try {
                     LoginActivity_.super.performSignupBackground(name, email, password);
+                } catch (Throwable e) {
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void performLoginBackground(final String email, final String password) {
+        BackgroundExecutor.execute(new BackgroundExecutor.Task("", 0, "") {
+
+
+            @Override
+            public void execute() {
+                try {
+                    LoginActivity_.super.performLoginBackground(email, password);
                 } catch (Throwable e) {
                     Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
                 }

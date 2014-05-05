@@ -84,11 +84,11 @@ public final class CreatorActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
-        mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
-        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
         typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
+        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
         mImageView = ((ImageView) hasViews.findViewById(id.imageView));
+        mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
+        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         {
             View view = hasViews.findViewById(id.submit_message);
             if (view!= null) {

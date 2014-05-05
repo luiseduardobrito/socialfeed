@@ -6,6 +6,7 @@
 package io.github.luiseduardobrito.social.model;
 
 import android.content.Context;
+import io.github.luiseduardobrito.social.util.AppNetworkUtil_;
 import org.androidannotations.api.view.OnViewChangedNotifier;
 
 public final class MessageListManager_
@@ -30,6 +31,7 @@ public final class MessageListManager_
     }
 
     private void init_() {
+        network = AppNetworkUtil_.getInstance_(context_);
         init();
     }
 

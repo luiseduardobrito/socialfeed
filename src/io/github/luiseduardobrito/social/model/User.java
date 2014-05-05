@@ -65,9 +65,10 @@ public class User extends Observable {
 	public static User createAndSave(String name, String email, String password)
 			throws AppParseException {
 		ParseUser mParseUser;
+		
 		try {
-			mParseUser = createParseObject(name, email, password);
-			return fromParseObject(mParseUser);
+			mParseUser = createParseObject(name, email, password);	
+			return fromParseObject(mParseUser);			
 		} catch (com.parse.ParseException e) {
 			throw AppParseException.fromParse(e);
 		}
@@ -173,7 +174,7 @@ public class User extends Observable {
 	}
 
 	public List<Message> getInbox() {
-		
+
 		return null;
 	}
 }
