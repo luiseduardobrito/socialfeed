@@ -120,7 +120,6 @@ public class CreatorActivity extends Activity {
 		mProgressDialog.dismiss();
 	}
 
-	@OptionsItem
 	void actionCapture() {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -128,7 +127,6 @@ public class CreatorActivity extends Activity {
 		}
 	}
 
-	@OptionsItem
 	void actionVideo() {
 		Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 		if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
@@ -136,7 +134,6 @@ public class CreatorActivity extends Activity {
 		}
 	}
 
-	@OptionsItem
 	void actionGallery() {
 		Intent i = new Intent(Intent.ACTION_PICK,
 				android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

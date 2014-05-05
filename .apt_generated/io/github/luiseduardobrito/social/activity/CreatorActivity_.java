@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -84,11 +83,11 @@ public final class CreatorActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
-        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
-        mImageView = ((ImageView) hasViews.findViewById(id.imageView));
-        mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
         mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
+        typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
+        mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
+        mImageView = ((ImageView) hasViews.findViewById(id.imageView));
+        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
         {
             View view = hasViews.findViewById(id.submit_message);
             if (view!= null) {
@@ -114,25 +113,17 @@ public final class CreatorActivity_
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = super.onOptionsItemSelected(item);
-        if (handled) {
-            return true;
+    public void notifyErrorResult(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                CreatorActivity_.super.notifyErrorResult(message);
+            }
+
         }
-        int itemId_ = item.getItemId();
-        if (itemId_ == id.action_gallery) {
-            actionGallery();
-            return true;
-        }
-        if (itemId_ == id.action_capture) {
-            actionCapture();
-            return true;
-        }
-        if (itemId_ == id.action_video) {
-            actionVideo();
-            return true;
-        }
-        return false;
+        );
     }
 
     @Override
@@ -143,20 +134,6 @@ public final class CreatorActivity_
             @Override
             public void run() {
                 CreatorActivity_.super.dimissDialog();
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void notifyErrorResult(final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                CreatorActivity_.super.notifyErrorResult(message);
             }
 
         }
