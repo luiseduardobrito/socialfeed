@@ -172,7 +172,7 @@ public class MainActivity extends Activity implements
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (requestCode == CreatorActivity.REQUEST_CREATE) {
-			refreshMessageList();
+			checkNetworkConnection();
 		}
 	}
 
