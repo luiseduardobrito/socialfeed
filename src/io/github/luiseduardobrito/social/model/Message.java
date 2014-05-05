@@ -12,6 +12,7 @@ import java.util.Observable;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 /**
  * @author Luis Eduardo Brito
@@ -155,7 +156,7 @@ public class Message extends Observable {
 	 * @throws AppParseException
 	 */
 	public static List<Message> findByCreator(User creator) throws AppParseException {
-		return findByCreator(creator.getObjectId());
+		return findByCreator(creator.getParseObject());
 	}
 
 	/**
@@ -165,14 +166,14 @@ public class Message extends Observable {
 	 * @return
 	 * @throws AppParseException
 	 */
-	public static List<Message> findByCreator(String creatorId) throws AppParseException {
+	public static List<Message> findByCreator(ParseUser mParseUser) throws AppParseException {
 
 		List<Message> result = new ArrayList<Message>();
 
 		try {
 
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
-			query.whereEqualTo("creator", creatorId);
+			query.whereEqualTo("creator", mParseUser);
 
 			for (ParseObject mParseObject : query.find()) {
 				result.add(Message.fromParseObject(mParseObject));
@@ -194,24 +195,24 @@ public class Message extends Observable {
 	 * @throws AppParseException
 	 */
 	public static List<Message> getUserFeed(User user) throws AppParseException {
-		return getUserFeed(user.getObjectId());
+		return getUserFeed(user.getParseObject());
 	}
 
 	/**
-	 * Get messages not created by user referenced by userId
+	 * Get messages not created by user referenced by mParseUser
 	 * 
-	 * @param userId
+	 * @param mParseUser
 	 * @return
 	 * @throws AppParseException
 	 */
-	public static List<Message> getUserFeed(String userId) throws AppParseException {
+	public static List<Message> getUserFeed(ParseUser mParseUser) throws AppParseException {
 
 		List<Message> result = new ArrayList<Message>();
 
 		try {
 
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
-			query.whereNotEqualTo("creator", userId);
+			query.whereNotEqualTo("creator", mParseUser);
 
 			for (ParseObject mParseObject : query.find()) {
 				result.add(Message.fromParseObject(mParseObject));

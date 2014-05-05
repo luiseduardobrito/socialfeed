@@ -18,8 +18,8 @@ import org.androidannotations.api.view.HasViews;
 import org.androidannotations.api.view.OnViewChangedListener;
 import org.androidannotations.api.view.OnViewChangedNotifier;
 
-public final class PlaceholderFragment_
-    extends PlaceholderFragment
+public final class SentFragment_
+    extends SentFragment
     implements HasViews, OnViewChangedListener
 {
 
@@ -63,8 +63,8 @@ public final class PlaceholderFragment_
         onViewChangedNotifier_.notifyViewChanged(this);
     }
 
-    public static PlaceholderFragment_.FragmentBuilder_ builder() {
-        return new PlaceholderFragment_.FragmentBuilder_();
+    public static SentFragment_.FragmentBuilder_ builder() {
+        return new SentFragment_.FragmentBuilder_();
     }
 
     @Override
@@ -80,7 +80,7 @@ public final class PlaceholderFragment_
 
             @Override
             public void run() {
-                PlaceholderFragment_.super.toastError(message);
+                SentFragment_.super.toastError(message);
             }
 
         }
@@ -94,7 +94,7 @@ public final class PlaceholderFragment_
 
             @Override
             public void run() {
-                PlaceholderFragment_.super.refreshAdapter();
+                SentFragment_.super.refreshAdapter();
             }
 
         }
@@ -109,8 +109,8 @@ public final class PlaceholderFragment_
             args_ = new Bundle();
         }
 
-        public PlaceholderFragment build() {
-            PlaceholderFragment_ fragment_ = new PlaceholderFragment_();
+        public SentFragment build() {
+            SentFragment_ fragment_ = new SentFragment_();
             fragment_.setArguments(args_);
             return fragment_;
         }

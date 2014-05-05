@@ -23,21 +23,21 @@ import org.androidannotations.api.view.OnViewChangedNotifier;
  * 
  */
 @SuppressWarnings("unused")
-public final class CardView_
-    extends CardView
+public final class NavigationDrawerItemView_
+    extends NavigationDrawerItemView
     implements HasViews, OnViewChangedListener
 {
 
     private boolean alreadyInflated_ = false;
     private final OnViewChangedNotifier onViewChangedNotifier_ = new OnViewChangedNotifier();
 
-    public CardView_(Context context) {
+    public NavigationDrawerItemView_(Context context) {
         super(context);
         init_();
     }
 
-    public static CardView build(Context context) {
-        CardView_ instance = new CardView_(context);
+    public static NavigationDrawerItemView build(Context context) {
+        NavigationDrawerItemView_ instance = new NavigationDrawerItemView_(context);
         instance.onFinishInflate();
         return instance;
     }
@@ -53,7 +53,7 @@ public final class CardView_
     public void onFinishInflate() {
         if (!alreadyInflated_) {
             alreadyInflated_ = true;
-            inflate(getContext(), layout.card_feed_item, this);
+            inflate(getContext(), layout.list_drawer_item, this);
             onViewChangedNotifier_.notifyViewChanged(this);
         }
         super.onFinishInflate();
@@ -67,10 +67,8 @@ public final class CardView_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        creator = ((TextView) hasViews.findViewById(id.creator));
-        icon = ((ImageView) hasViews.findViewById(id.icon));
-        label = ((TextView) hasViews.findViewById(id.label));
-        points = ((TextView) hasViews.findViewById(id.points));
+        labelView = ((TextView) hasViews.findViewById(id.label));
+        iconView = ((ImageView) hasViews.findViewById(id.icon));
     }
 
 }

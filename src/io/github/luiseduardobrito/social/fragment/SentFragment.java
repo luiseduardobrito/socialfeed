@@ -33,7 +33,7 @@ import android.widget.Toast;
  * A placeholder fragment containing a simple view.
  */
 @EFragment(R.layout.fragment_main)
-public class PlaceholderFragment extends Fragment implements Observer {
+public class SentFragment extends Fragment implements Observer {
 
 	FeedAdapter adapter;
 
@@ -53,8 +53,8 @@ public class PlaceholderFragment extends Fragment implements Observer {
 	 * Returns a new instance of this fragment for the given section
 	 * number.
 	 */
-	public static PlaceholderFragment newInstance(int sectionNumber) {
-		PlaceholderFragment fragment = PlaceholderFragment_.builder().build();
+	public static SentFragment newInstance(int sectionNumber) {
+		SentFragment fragment = SentFragment_.builder().build();
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
@@ -70,7 +70,7 @@ public class PlaceholderFragment extends Fragment implements Observer {
 	void initViews() {
 
 		try {
-			adapter = new FeedAdapter(getActivity(), mMessageList.get());
+			adapter = new FeedAdapter(getActivity(), mMessageList.getSent());
 		} catch (AppParseException e) {
 			toastError(e.getMessage());
 		}
@@ -102,7 +102,7 @@ public class PlaceholderFragment extends Fragment implements Observer {
 	@UiThread
 	void refreshAdapter() {
 		try {
-			adapter.refresh(mMessageList.get());
+			adapter.refresh(mMessageList.getSent());
 		} catch (AppParseException e) {
 			toastError(e.getMessage());
 		}

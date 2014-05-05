@@ -19,7 +19,8 @@ import org.androidannotations.annotations.EBean.Scope;
 @EBean(scope = Scope.Singleton)
 public class MessageListManager extends Observable {
 
-	List<Message> list;
+	List<Message> feed;
+	List<Message> sent;
 
 	@AfterInject
 	void init() {
@@ -34,12 +35,19 @@ public class MessageListManager extends Observable {
 	}
 
 	public void refresh() throws AppParseException {
-		this.list = Message.find();
+
+		this.feed = Message.getUserFeed(User.getCurrent());
+		this.sent = Message.findByCreator(User.getCurrent());
+
 		this.setChanged();
 		this.notifyObservers();
 	}
 
-	public List<Message> get() {
-		return this.list;
+	public List<Message> getFeed() {
+		return this.feed;
+	}
+
+	public List<Message> getSent() {
+		return this.sent;
 	}
 }

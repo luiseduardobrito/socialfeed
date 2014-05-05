@@ -84,11 +84,11 @@ public final class CreatorActivity_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         mPointsEdit = ((EditText) hasViews.findViewById(id.points_edit));
+        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
         typeSpinner = ((Spinner) hasViews.findViewById(id.type_edit));
         mImageView = ((ImageView) hasViews.findViewById(id.imageView));
-        mVideoView = ((VideoView) hasViews.findViewById(id.videoView));
-        mTitleEdit = ((EditText) hasViews.findViewById(id.title_edit));
         {
             View view = hasViews.findViewById(id.submit_message);
             if (view!= null) {
@@ -120,6 +120,10 @@ public final class CreatorActivity_
             return true;
         }
         int itemId_ = item.getItemId();
+        if (itemId_ == id.action_gallery) {
+            actionGallery();
+            return true;
+        }
         if (itemId_ == id.action_capture) {
             actionCapture();
             return true;
@@ -128,25 +132,7 @@ public final class CreatorActivity_
             actionVideo();
             return true;
         }
-        if (itemId_ == id.action_gallery) {
-            actionGallery();
-            return true;
-        }
         return false;
-    }
-
-    @Override
-    public void notifyErrorResult(final String message) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                CreatorActivity_.super.notifyErrorResult(message);
-            }
-
-        }
-        );
     }
 
     @Override
@@ -157,6 +143,20 @@ public final class CreatorActivity_
             @Override
             public void run() {
                 CreatorActivity_.super.dimissDialog();
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void notifyErrorResult(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                CreatorActivity_.super.notifyErrorResult(message);
             }
 
         }

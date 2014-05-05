@@ -84,15 +84,15 @@ public final class LoginActivity_
     @Override
     public void onViewChanged(HasViews hasViews) {
         mLoginStatusMessageView = ((TextView) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status_message));
-        mPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.password));
-        mSignupEmailView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_email));
-        mSignupButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_button));
-        mScrollFormView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.scroll_form));
-        mSignupPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_password));
         mLoginStatusView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.login_status));
-        mSignInButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.sign_in_button));
+        mSignupButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_button));
+        mSignupEmailView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_email));
+        mSignupPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_password));
+        mScrollFormView = ((View) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.scroll_form));
         mEmailView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.email));
+        mPasswordView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.password));
         mSignupNameView = ((EditText) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.signup_name));
+        mSignInButton = ((Button) hasViews.findViewById(io.github.luiseduardobrito.social.R.id.sign_in_button));
         initViews();
     }
 
@@ -118,6 +118,20 @@ public final class LoginActivity_
     }
 
     @Override
+    public void notifySuccess(final User user) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                LoginActivity_.super.notifySuccess(user);
+            }
+
+        }
+        );
+    }
+
+    @Override
     public void setupSignupForm() {
         handler_.post(new Runnable() {
 
@@ -125,6 +139,20 @@ public final class LoginActivity_
             @Override
             public void run() {
                 LoginActivity_.super.setupSignupForm();
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void toastMessage(final String message) {
+        handler_.post(new Runnable() {
+
+
+            @Override
+            public void run() {
+                LoginActivity_.super.toastMessage(message);
             }
 
         }
@@ -146,34 +174,6 @@ public final class LoginActivity_
     }
 
     @Override
-    public void attemptSignup() {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                LoginActivity_.super.attemptSignup();
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void notifySuccess(final User user) {
-        handler_.post(new Runnable() {
-
-
-            @Override
-            public void run() {
-                LoginActivity_.super.notifySuccess(user);
-            }
-
-        }
-        );
-    }
-
-    @Override
     public void attemptLogin() {
         handler_.post(new Runnable() {
 
@@ -188,13 +188,13 @@ public final class LoginActivity_
     }
 
     @Override
-    public void toastMessage(final String message) {
+    public void attemptSignup() {
         handler_.post(new Runnable() {
 
 
             @Override
             public void run() {
-                LoginActivity_.super.toastMessage(message);
+                LoginActivity_.super.attemptSignup();
             }
 
         }

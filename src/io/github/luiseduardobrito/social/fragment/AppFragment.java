@@ -3,6 +3,7 @@
  */
 package io.github.luiseduardobrito.social.fragment;
 
+import io.github.luiseduardobrito.social.R;
 import android.app.Fragment;
 
 /**
@@ -11,7 +12,14 @@ import android.app.Fragment;
  */
 public enum AppFragment {
 
-	PLACEHOLDER(0), SETTINGS(1, "Settings");
+	FEED(0, "Feed", R.drawable.reorder), SENT(1, "Sent", R.drawable.comment33), SETTINGS(
+			2,
+			"Settings",
+			android.R.drawable.ic_menu_preferences);
+
+	public static Integer getCount() {
+		return AppFragment.values().length;
+	}
 
 	public static AppFragment fromPosition(Integer position) {
 		if (position != null) {
@@ -28,8 +36,12 @@ public enum AppFragment {
 
 		AppFragment fragmentEnum = fromPosition(position);
 
-		if (fragmentEnum.equals(AppFragment.PLACEHOLDER)) {
-			return PlaceholderFragment_.newInstance(position);
+		if (fragmentEnum.equals(AppFragment.FEED)) {
+			return FeedFragment_.newInstance(position);
+		}
+
+		if (fragmentEnum.equals(AppFragment.SENT)) {
+			return SentFragment_.newInstance(position);
 		}
 
 		return null;
@@ -37,10 +49,12 @@ public enum AppFragment {
 
 	private String title;
 	private Integer position;
+	private int iconResourceId;
 
-	private AppFragment(Integer position, String title) {
+	private AppFragment(Integer position, String title, int iconResourceId) {
 		this.position = position;
 		this.title = title;
+		this.iconResourceId = iconResourceId;
 	}
 
 	private AppFragment(Integer position) {
@@ -54,5 +68,9 @@ public enum AppFragment {
 
 	public String getTitle() {
 		return this.title;
+	}
+
+	public int getIconResourceId() {
+		return iconResourceId;
 	}
 }
